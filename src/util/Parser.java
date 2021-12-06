@@ -8,6 +8,51 @@ import java.util.Stack;
  * Класс, предназначенный для конвертирования различных строк
  */
 public class Parser {
+    // Метод для конвертирования выражения в обратную польскую запись
+    // 1. Входная строка проверяется на корректность данных и раскладывается на лексемы, у каждой из которых различный приоритет
+    // 2. Если входные данные некорректны (проверяется то, что используются только числа, знаки операций, точка и скобки), выводим сообщение об этом
+    // 3. Создаем стек и результирующую строку
+    // 4. Проходим по списку лексем
+    //      - если лексема - это число (приоритет 0) - записываем в результирующую строку
+    //      - если лексема - это открывающая скобка (приоритет 1) - кладем наверх стека
+    //      - если лексема - это оператор (приоритет > 1) - циклом проходим по стеку, пока он не пуст:
+    //          1. если приоритет элемента на вершине стека >= приоритета текущего элемента, то переносим элемент из стека в результирующую строку,
+    //          иначе останавливаем цикл
+    //          2. кладем в стек текущий элемент
+    //      - если лексема - это закрывающая скобка (приоритет -1), то переносим элементы из стека в результирующую строку до тех пор,
+    //      пока не встретим открывающую скобку
+    //  5. Пока в стеке есть элементы, заносим их в результирующую строку
+    public static String parseToRPN(String expression) throws InvalidDataException {
+
+        // Проверка на корректность введенных данных
+        if (!Validator.isValidForRPN(expression)) throw new InvalidDataException("Некорректно введенные данные");
+
+        StringBuilder output = new StringBuilder();
+        Stack<String> stack = new Stack<>();
+        List<String> tokens = parseToTokens(expression);
+        int priority;
+
+        for (String token : tokens) {
+            priority = getPriority(token);
+            if (priority == 0) output.append(token).append(" ");
+            if (priority == 1) stack.push(token);
+
+            if (priority > 1) {
+                while (!stack.empty()) {
+                    if (getPriority(stack.peek()) >= priority) output.append(stack.pop()).append(" ");
+                    else break;
+                }
+                stack.push(token);
+            }
+
+            if (priority == -1) {
+                while (getPriority(stack.peek()) != 1) output.append(stack.pop()).append(" ");
+                stack.pop();
+            }
+        }
+        while (!stack.empty()) output.append(stack.pop()).append(" ");
+        return output.toString();
+    }
 
     // Метод для конвертирования выражения в список лексем (пробелы не учитываются)
     private static List<String> parseToTokens(String expression) {
@@ -45,53 +90,6 @@ public class Parser {
             list.add(tmp.toString());
         }
         return list;
-    }
-
-    // Метод для конвертирования выражения в обратную польскую запись
-    // 1. Входная строка проверяется на корректность данных и раскладывается на лексемы, у каждой из которых различный приоритет
-    // 2. Если входные данные некорректны (проверяется то, что используются только числа, знаки операций, точка и скобки), выводим сообщение об этом
-    // 3. Создаем стек и результирующую строку
-    // 4. Проходим по списку лексем
-    //      - если лексема - это число (приоритет 0) - записываем в результирующую строку
-    //      - если лексема - это открывающая скобка (приоритет 1) - кладем наверх стека
-    //      - если лексема - это оператор (приоритет > 1) - циклом проходим по стеку, пока он не пуст:
-    //          1. если приоритет элемента на вершине стека >= приоритета текущего элемента, то переносим элемент из стека в результирующую строку,
-    //          иначе останавливаем цикл
-    //          2. кладем в стек текущий элемент
-    //      - если лексема - это закрывающая скобка (приоритет -1), то переносим элементы из стека в результирующую строку до тех пор,
-    //      пока не встретим открывающую скобку
-    //  5. Пока в стеке есть элементы, заносим их в результирующую строку
-
-    public static String parseToRPN(String expression) throws InvalidDataException {
-
-        // Проверка на корректность введенных данных
-        if (!Validator.isValidForRPN(expression)) throw new InvalidDataException();
-
-        StringBuilder output = new StringBuilder();
-        Stack<String> stack = new Stack<>();
-        List<String> tokens = parseToTokens(expression);
-        int priority;
-
-        for (String token : tokens) {
-            priority = getPriority(token);
-            if (priority == 0) output.append(token).append(" ");
-            if (priority == 1) stack.push(token);
-
-            if (priority > 1) {
-                while (!stack.empty()) {
-                    if (getPriority(stack.peek()) >= priority) output.append(stack.pop()).append(" ");
-                    else break;
-                }
-                stack.push(token);
-            }
-
-            if (priority == -1) {
-                while (getPriority(stack.peek()) != 1) output.append(stack.pop()).append(" ");
-                stack.pop();
-            }
-        }
-        while (!stack.empty()) output.append(stack.pop()).append(" ");
-        return output.toString();
     }
 
     // Установка приоритетов различных лексем

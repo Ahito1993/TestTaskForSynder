@@ -18,12 +18,9 @@ public class CalculatorApp {
         String expression = scanner.nextLine();
         try {
             Calculator.calculate(expression);
-        } catch (InvalidDataException | NumberFormatException e) {
+        } catch (InvalidDataException | ArithmeticException e) {
             System.out.println();
-            System.out.println("Некорректно введенные данные");
-        } catch (ArithmeticException e) {
-            System.out.println();
-            System.out.println("Попытка деления на 0");
+            System.out.println(e.getMessage());
         }
     }
 }
