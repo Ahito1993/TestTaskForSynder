@@ -22,7 +22,7 @@ public class Parser {
     //      - если лексема - это закрывающая скобка (приоритет -1), то переносим элементы из стека в результирующую строку до тех пор,
     //      пока не встретим открывающую скобку
     //  5. Пока в стеке есть элементы, заносим их в результирующую строку
-    public static String parseToRPN(String expression) throws InvalidDataException {
+    static String parseToRPN(String expression) throws InvalidDataException {
 
         // Проверка на корректность введенных данных
         if (!Validator.isValidForRPN(expression)) throw new InvalidDataException("Некорректно введенные данные");
@@ -93,7 +93,7 @@ public class Parser {
     }
 
     // Установка приоритетов различных лексем
-    public static int getPriority(String symbol) {
+    static int getPriority(String symbol) {
         if (symbol.equals("%")) return 6;
         if (symbol.equals("^")) return 5;
         if (symbol.equals("±")) return 4;
@@ -105,7 +105,7 @@ public class Parser {
     }
 
     // Дополнительный метод преобразования строки в формате польской записи к списку лексем
-    public static List<String> parseToRPNTokens(String expressionToRPN) {
+    static List<String> parseToRPNTokens(String expressionToRPN) {
         List<String> tokensRPN = new ArrayList<>();
         StringBuilder num = new StringBuilder();
 

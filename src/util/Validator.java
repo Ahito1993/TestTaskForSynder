@@ -8,7 +8,7 @@ public class Validator {
 
     // Метод, предназначенный для валидации данных, введенных с консоли
     // Проверка на то, что выражение введено корректно (пробелы не учитываются)
-    public static boolean isValidForRPN(String expression) {
+    static boolean isValidForRPN(String expression) {
         // Удаление пробелов и проверка на пустые значения
         String expressionWithoutSpaces = expression.replace(" ", "");
         if (expressionWithoutSpaces.equals("")) {
@@ -80,7 +80,7 @@ public class Validator {
         }
     }
     // Проверка на то, что строка является числом
-    public static boolean isNumeric(String element) {
+    static boolean isNumeric(String element) {
         try {
             Double.parseDouble(element);
             return true;
